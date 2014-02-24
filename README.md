@@ -47,6 +47,7 @@ A tiny chess game based on python,wxpython
 
 情况3：
 当玩家1在（0,3）处落子后，位于（2,3）的玩家2的子  不被吃
+
 [1, 1, 0, 1]
 
 [0, 0, 0, 1]
