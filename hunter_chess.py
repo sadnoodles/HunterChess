@@ -180,6 +180,7 @@ class Chess(wx.Frame):
             if x <=(posx*self.rcWidth+r) and y<=(posy*self.rcWidth+r):
                 return posy,posx
         return None
+#
 class ComputerChess(Chess):
     def __init__(self, parent, id, title):
         chess.__init__(self, parent, id, title)
