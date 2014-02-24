@@ -4,6 +4,12 @@ HunterChess
 A tiny chess game based on python,wxpython
 
 
+玩法：
+===========
+黑方先走。鼠标左键选择棋子，然后移动。双击棋盘以悔棋。
+
+
+
 规则:
 ===========
 1，黑白双方轮流移动棋子
@@ -83,3 +89,7 @@ A tiny chess game based on python,wxpython
 [2, 2, 0, 2]
 
 在行上的规则与以上情况类似
+
+Python版本：2.7.2
+依赖的库  ：wxpython
+打包使用  ：cx_Freeze

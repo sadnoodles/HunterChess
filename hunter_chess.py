@@ -71,11 +71,11 @@ class Chess(wx.Frame):
     def OnDbClick(self,event):
         self.undo()
         self.OnSize(None)
-        for i in self.history:print i
+        #for i in self.history:print i
     def OnClick(self,event):
         x,y = event.GetPosition()
         pos=self.xy2pos(x,y)
-        print pos
+        #printpos
         if pos:
             if (not self.selecting):
                 if self.map[pos[0]][pos[1]]==self.currentPlayer:

@@ -4,6 +4,11 @@
 A tiny chess game based on python,wxpython
 
 
+How to play:
+===========
+Player black goes first.Click to select, move.Doubleclick to undo.
+
+
 Rules:
 ===========
 1,Player moves take turns
@@ -76,3 +81,7 @@ Player2 move to (0,3), player2 at (2,3) will NOT be eaten.
 [2, 2, 0, 2]
 
 It's the same on columns.
+
+Python   ：2.7.2
+Depends  ：wxpython
+exe file ：cx_Freeze
