@@ -3,6 +3,7 @@ HunterChess
 
 A tiny chess game based on python,wxpython
 
+![screenshot](https://raw.github.com/sadnoodles/HunterChess/master/screenshot.png)
 
 Íæ·¨£º
 ===========
