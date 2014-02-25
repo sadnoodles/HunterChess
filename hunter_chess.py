@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#HunterChess:
+#    author: ÁõºÆ½Ü
+#    e-mail£ºsadnoodles@gmail.com
 import wx
 class Chess(wx.Frame):
     def __init__(self, parent, id, title):
         wx.Frame.__init__(self, parent, id, title, size=(10, 10))
         self.SetBackgroundColour('WHITE')
         self.newGame()
-        self.BlackPiece=wx.Bitmap(r'ºÚ×Ó.png', wx.BITMAP_TYPE_PNG)
-        self.WhitePiece=wx.Bitmap(r'°××Ó.png', wx.BITMAP_TYPE_PNG)
-        self.MaskPiece=wx.Bitmap(r'mask.png', wx.BITMAP_TYPE_PNG)
+        self.BlackPiece=wx.Bitmap(r'img\ºÚ×Ó.png', wx.BITMAP_TYPE_PNG)
+        self.WhitePiece=wx.Bitmap(r'img\°××Ó.png', wx.BITMAP_TYPE_PNG)
+        self.MaskPiece=wx.Bitmap(r'img\mask.png', wx.BITMAP_TYPE_PNG)
         # print self.BlackPiece.Size
         
         self.piece_r=20
