@@ -90,7 +90,7 @@ class Chess(wx.Frame):
         self.selecting=False
         self.selected_pos=None
         self.OnSize(None)
-        #for i in self.history:print i
+        # for i in self.history:print i
     def OnClick(self,event):
         x,y = event.GetPosition()
         pos=self.xy2pos(x,y)
@@ -107,9 +107,12 @@ class Chess(wx.Frame):
                 self.selected_pos=None
             self.OnSize(None)
             if self.count[self.currentPlayer]==0:
-                wx.MessageBox("Player %s WIN!"%(['','black','white'][self.getAnotherPlayer(self.currentPlayer)]),'提示')
-                self.newGame()
-                self.OnSize(None)
+                wx.MessageBox("Player %s WIN!"%(['','Black','White'][self.getAnotherPlayer(self.currentPlayer)]),'提示')
+                # self.newGame()
+                # self.OnSize(None)
+        self.afterClick()
+    def afterClick(self):
+        pass
     def newGame(self):
         '''新游戏开始，初始化数据
         currentPlayer：当前玩家 值为1或2
