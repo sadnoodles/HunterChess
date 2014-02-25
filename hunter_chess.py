@@ -6,9 +6,11 @@ class Chess(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size=(10, 10))
         self.SetBackgroundColour('WHITE')
         self.newGame()
-        self.BlackPiece=wx.Bitmap(r'GitHub40001.ico', wx.BITMAP_TYPE_ICO)
+        self.BlackPiece=wx.Bitmap(r'黑子.png', wx.BITMAP_TYPE_PNG)
+        self.WhitePiece=wx.Bitmap(r'白子.png', wx.BITMAP_TYPE_PNG)
+        self.MaskPiece=wx.Bitmap(r'mask.png', wx.BITMAP_TYPE_PNG)
         # print self.BlackPiece.Size
-        self.WhitePiece=wx.Bitmap(r'GitHub32512.ico', wx.BITMAP_TYPE_ICO)
+        
         self.piece_r=20
         self.rcWidth=100
         
@@ -62,22 +64,24 @@ class Chess(wx.Frame):
         if player==1:
             x0,y0=self.BlackPiece.Size
             dc.DrawBitmap(self.BlackPiece,x-x0/2,y-y0/2,True)
-        else:
+        elif player==2:
             x0,y0=self.WhitePiece.Size
             dc.DrawBitmap(self.WhitePiece,x-x0/2,y-y0/2,True)
+        elif player=="SELECT":
+            x0,y0=self.MaskPiece.Size
+            dc.DrawBitmap(self.MaskPiece,x-x0/2,y-y0/2,True)
+        else:
+            raise 'Error drawing pieces'
     def _draw_pieces(self,dc):
         '''绘制所有棋子'''
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 if self.map[i][j]==0:
                     continue
-                color='black' if self.map[i][j]==1 else 'white'
-                if (i,j)==self.selected_pos: #绘出选中的棋子
-                    dc.SetPen(wx.Pen("yellow", 3))
-                else:
-                    dc.SetPen(wx.Pen("black", 1)) #外圈线条颜色
-                dc.SetBrush(wx.Brush(color))
                 self._draw_piece_by_pos(dc,(i,j),self.map[i][j])
+                if (i,j)==self.selected_pos: #绘出选中的棋子
+                    self._draw_piece_by_pos(dc,(i,j),"SELECT")
+                    
     def OnDbClick(self,event):
         self.undo()
         self.OnSize(None)
