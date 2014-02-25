@@ -57,7 +57,7 @@ class Chess(wx.Frame):
                 dc.DrawRectangle(self.meshLeftTop[0]+self.rcWidth*i,self.meshLeftTop[1]+self.rcWidth*j, self.rcWidth, self.rcWidth)
     def _draw_info(self,dc):
         '''显示当前玩家信息'''
-        info="Current player:%s"%(['','black','white'][self.currentPlayer])
+        info="Current player:%s"%(['','Black','White'][self.currentPlayer])
         dc.DrawText(info,10,10)
     def _draw_piece_by_pos(self,dc,pos,player=1):
         """根据在棋盘中的位置绘制一个棋子"""
@@ -87,6 +87,8 @@ class Chess(wx.Frame):
                     
     def OnDbClick(self,event):
         self.undo()
+        self.selecting=False
+        self.selected_pos=None
         self.OnSize(None)
         #for i in self.history:print i
     def OnClick(self,event):
