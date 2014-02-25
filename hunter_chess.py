@@ -6,7 +6,10 @@ class Chess(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size=(10, 10))
         self.SetBackgroundColour('WHITE')
         self.newGame()
-        self.stone_r=20
+        self.BlackPiece=wx.Bitmap(r'GitHub40001.ico', wx.BITMAP_TYPE_ICO)
+        # print self.BlackPiece.Size
+        self.WhitePiece=wx.Bitmap(r'GitHub32512.ico', wx.BITMAP_TYPE_ICO)
+        self.piece_r=20
         self.rcWidth=100
         
         self.meshLeftTop=(50,50)
@@ -18,7 +21,7 @@ class Chess(wx.Frame):
         # wx.EVT_LEFT_DCLICK
         # wx.EVT_LEFT_DOWN
         # wx.EVT_LEFT_UP
-        self.InitBuffer() 
+        self.InitBuffer()
         self.Bind(wx.EVT_SIZE, self.OnSize) 
         self.Bind(wx.EVT_PAINT, self.OnPaint) 
         self.Centre()
@@ -37,7 +40,7 @@ class Chess(wx.Frame):
         dc = wx.BufferedDC(wx.ClientDC(self), self.buffer) 
         self._mesh(dc)
         self._draw_info(dc)
-        self._draw_stones(dc)
+        self._draw_pieces(dc)
         
     def _mesh(self,dc):
         '''绘制网格'''
@@ -51,11 +54,18 @@ class Chess(wx.Frame):
         '''显示当前玩家信息'''
         info="Current player:%s"%(['','black','white'][self.currentPlayer])
         dc.DrawText(info,10,10)
-    def _draw_stone_by_pos(self,dc,pos):
+    def _draw_piece_by_pos(self,dc,pos,player=1):
         """根据在棋盘中的位置绘制一个棋子"""
         x,y=self.pos2xy(pos)
-        dc.DrawCircle(x,y,self.stone_r)
-    def _draw_stones(self,dc):
+        # dc.DrawCircle(x,y,self.piece_r)
+        # ic=wx.Bitmap(r'GitHub40001.ico', wx.BITMAP_TYPE_ICO)
+        if player==1:
+            x0,y0=self.BlackPiece.Size
+            dc.DrawBitmap(self.BlackPiece,x-x0/2,y-y0/2,True)
+        else:
+            x0,y0=self.WhitePiece.Size
+            dc.DrawBitmap(self.WhitePiece,x-x0/2,y-y0/2,True)
+    def _draw_pieces(self,dc):
         '''绘制所有棋子'''
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
@@ -67,7 +77,7 @@ class Chess(wx.Frame):
                 else:
                     dc.SetPen(wx.Pen("black", 1)) #外圈线条颜色
                 dc.SetBrush(wx.Brush(color))
-                self._draw_stone_by_pos(dc,(i,j))
+                self._draw_piece_by_pos(dc,(i,j),self.map[i][j])
     def OnDbClick(self,event):
         self.undo()
         self.OnSize(None)
@@ -173,7 +183,7 @@ class Chess(wx.Frame):
     def xy2pos(self,x,y):
         """ 将GUI的坐标转化为地图坐标，即列表的行、列  """
         x,y=x-self.meshLeftTop[0],y-self.meshLeftTop[1]
-        r=self.stone_r
+        r=self.piece_r
         if -r<x<r+3*self.rcWidth and -r<y<r+3*self.rcWidth:
             posx=(x+r)/self.rcWidth
             posy=(y+r)/self.rcWidth
@@ -181,12 +191,7 @@ class Chess(wx.Frame):
                 return posy,posx
         return None
 #
-class ComputerChess(Chess):
-    def __init__(self, parent, id, title):
-        chess.__init__(self, parent, id, title)
-    def get_all_steps(self,player):
-        pass
-        
+
 if __name__=='__main__':
     app = wx.App()
     c=Chess(None, -1, 'Chess')
