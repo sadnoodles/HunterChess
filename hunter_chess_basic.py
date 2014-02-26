@@ -8,10 +8,10 @@ class Chess(wx.Frame):
     def __init__(self, parent, id, title):
         wx.Frame.__init__(self, parent, id, title, size=(10, 10))
         self.SetBackgroundColour('WHITE')
-        self.newGame()
         self.BlackPiece=wx.Bitmap(r'img\黑子.png', wx.BITMAP_TYPE_PNG)
         self.WhitePiece=wx.Bitmap(r'img\白子.png', wx.BITMAP_TYPE_PNG)
         self.MaskPiece=wx.Bitmap(r'img\mask.png', wx.BITMAP_TYPE_PNG)
+        self.newGame()
         # print self.BlackPiece.Size
         
         self.piece_r=20
@@ -58,7 +58,7 @@ class Chess(wx.Frame):
     def _draw_info(self,dc):
         '''显示当前玩家信息'''
         info="Current player:%s"%(['','Black','White'][self.currentPlayer])
-        dc.DrawText(info,10,10)
+        dc.DrawText(info,5,5)
     def _draw_piece_by_pos(self,dc,pos,player=1):
         """根据在棋盘中的位置绘制一个棋子"""
         x,y=self.pos2xy(pos)
@@ -87,6 +87,7 @@ class Chess(wx.Frame):
                     
     def OnDbClick(self,event):
         self.undo()
+        self.undo()
         self.selecting=False
         self.selected_pos=None
         self.OnSize(None)
@@ -106,11 +107,12 @@ class Chess(wx.Frame):
                     self.move(self.selected_pos,pos)
                 self.selected_pos=None
             self.OnSize(None)
-            if self.count[self.currentPlayer]==0:
-                wx.MessageBox("Player %s WIN!"%(['','Black','White'][self.getAnotherPlayer(self.currentPlayer)]),'提示')
-                # self.newGame()
-                # self.OnSize(None)
+            self.ifWin(self.currentPlayer)
         self.afterClick()
+    def ifWin(self,player):
+        if (not self.GameOver) and (not self.count[player]):
+            wx.MessageBox("Player %s WIN!"%(['','Black','White'][self.getAnotherPlayer(player)]),'提示')
+            self.GameOver=True
     def afterClick(self):
         pass
     def newGame(self):
@@ -124,6 +126,7 @@ class Chess(wx.Frame):
             '''
         self.currentPlayer=1
         self.selecting=False
+        self.GameOver=False
         self.selected_pos=None
         self.history=[]
         self.count=[0,4,4]
@@ -139,6 +142,8 @@ class Chess(wx.Frame):
         """撤销移动，如果有吃子，也同时撤销"""
         if not self.history:
             return
+        if self.GameOver==True:
+            self.GameOver=False
         from_pos,to_pos,eat=self.history.pop()
         if eat:
             self.map[eat[0]][eat[1]]=self.currentPlayer
@@ -157,6 +162,7 @@ class Chess(wx.Frame):
             self.count[self.getAnotherPlayer(self.currentPlayer)]-=1
         self.history.append((pos1,pos2,eaten))
         self.currentPlayer=self.getAnotherPlayer(self.currentPlayer)
+        return eaten
     def _strip(self,l):
         '''去除列表首尾的0，返回剩余的'''
         line=[a for a in l]
