@@ -77,15 +77,16 @@ class ComputerChess(Chess):
             #AI被禁用
             return
         player=2
-        if self.currentPlayer==player:
+        if self.currentPlayer==player and self.GameOver==False:
             time.sleep(0.5)
             if self.AILevel==1:
                 #获取随机的走子
                 step=self.rndMove(player)
             elif self.AILevel==2:
                 #获取经过计算的较好走子
-                step=self.getBetterMove(player)
+                step,score=self.getBetterMove(player)
             elif self.AILevel==3:
+                #获取经过计算的更好的走子
                 step=self.getBetterMoveByDeep(player)
             elif self.AILevel==4:
                 step=self.getBestMove(player)
@@ -110,21 +111,32 @@ class ComputerChess(Chess):
         s=[] #存放最终走法和最终分数
         tmp=[] #临时存放分数
         m=[] #临时存放走法
-        self.lookdown(3,player,s,tmp,m,original=player)
+        self.lookdown(5,player,s,tmp,m,original=player)
         s.sort(lambda x,y:cmp(x[1],y[1]))
         # import pprint
         # pprint.pprint(s)
         # print s[-2]
-        print len(s)
+        # print len(s)
+        # print s[-1]
         # print '*'*8
-        return s[-1][0]
+        if s:
+            return s[-1][0]
+        else:
+            return
     def lookdown(self,deep,player,s,tmp,m,original):
         import copy
         steps=self.getAllSteps(player)
-        if deep==0:
+        if deep==0 or not steps:
             s.append((copy.copy(m[0]),copy.copy(tmp)))
         else:
-            for i,j in steps:   
+            ms=self.getBetterMove(player)
+            if ms:
+                mv,scs=ms
+                h=scs[-1][-1]
+                bests=map(lambda x:x[0],filter(lambda x:x[-1]>=h,scs))
+            else:
+                bests=steps
+            for i,j in bests:
                 eat=self.move(i,j)
                 m.append((i,j))
                 player2=self.getAnotherPlayer(player)
@@ -161,8 +173,8 @@ class ComputerChess(Chess):
                 highscore=score
                 highmove=(i,j)
         scores.sort(lambda x,y:cmp(x[1],y[1]))
-        print scores
-        return highmove
+        # print scores
+        return highmove,scores
     def hasEat(self,player):
         steps=self.getAllSteps(player)
         e=0
