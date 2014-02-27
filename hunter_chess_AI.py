@@ -87,9 +87,10 @@ class ComputerChess(Chess):
                 step,score=self.getBetterMove(player)
             elif self.AILevel==3:
                 #获取经过计算的更好的走子
-                step=self.getBetterMoveByDeep(player)
+                step=self.getBetterMoveByDeep(player,3)
             elif self.AILevel==4:
-                step=self.getBestMove(player)
+                # step=self.getBestMove(player)
+                step=self.getBetterMoveByDeep(player,5)
                 
             if step:
                 self.move(step[0],step[1])
@@ -106,12 +107,12 @@ class ComputerChess(Chess):
                       [0,1]意思是：没有吃子，没有被吃
                       [0,0]意思是：没有吃子，被吃
     """
-    def getBetterMoveByDeep(self,player):
+    def getBetterMoveByDeep(self,player,deep):
         
         s=[] #存放最终走法和最终分数
         tmp=[] #临时存放分数
         m=[] #临时存放走法
-        self.lookdown(5,player,s,tmp,m,original=player)
+        self.lookdown(deep,player,s,tmp,m,original=player)
         s.sort(lambda x,y:cmp(x[1],y[1]))
         # import pprint
         # pprint.pprint(s)
@@ -136,6 +137,7 @@ class ComputerChess(Chess):
                 bests=map(lambda x:x[0],filter(lambda x:x[-1]>=h,scs))
             else:
                 bests=steps
+            random.shuffle(bests) #加入一点变化
             for i,j in bests:
                 eat=self.move(i,j)
                 m.append((i,j))
