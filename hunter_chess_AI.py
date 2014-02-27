@@ -4,7 +4,6 @@ from hunter_chess_basic import Chess
 import time,os
 import pickle
 import random
-
 wildcard='History file (*.history)|*.history|All files (*.*)|*.*'
 class ComputerChess(Chess):
     def __init__(self, parent, id, title,AILevel=0):
@@ -29,7 +28,7 @@ class ComputerChess(Chess):
         self.OnSize(None)
     def MenuSet(self,e=None):
         '设置AI等级'
-        dlg = wx.SingleChoiceDialog(self, '请选择:', '选择对战模式',['人人对战','简单的电脑','聪明的电脑'], 
+        dlg = wx.SingleChoiceDialog(self, '请选择:', '选择对战模式',['人人对战','掷筛子的电脑','会计算两步的电脑','聪明的电脑','O,DeepThought'], 
         wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             self.AILevel=dlg.GetSelection()
@@ -47,8 +46,11 @@ class ComputerChess(Chess):
     def MenuSaveHistory(self,e=None):
         if not self.history:
             return
-        dlg = wx.FileDialog(self, message="Save file as ...", defaultDir=os.getcwd(), 
-        defaultFile="1.history", wildcard=wildcard, style=wx.SAVE)
+        import pathname
+        cd=os.getcwd()
+        filename=pathname.numberName(dir=cd,start=1,ext='.history')
+        dlg = wx.FileDialog(self, message="Save file as ...", defaultDir=cd, 
+        defaultFile=filename, wildcard=wildcard, style=wx.SAVE)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             pickle.dump(self.history,open(path,'w'))
@@ -74,22 +76,109 @@ class ComputerChess(Chess):
         if self.AILevel==0:
             #AI被禁用
             return
-        if self.currentPlayer==2:
+        player=2
+        if self.currentPlayer==player:
             time.sleep(0.5)
             if self.AILevel==1:
                 #获取随机的走子
-                step=self.rndMove(2)
-            else:
+                step=self.rndMove(player)
+            elif self.AILevel==2:
                 #获取经过计算的较好走子
-                step=self.getBestMove(2)
+                step=self.getBetterMove(player)
+            elif self.AILevel==3:
+                step=self.getBetterMoveByDeep(player)
+            elif self.AILevel==4:
+                step=self.getBestMove(player)
+                
             if step:
                 self.move(step[0],step[1])
                 self.OnSize(None)
                 self.ifWin(self.currentPlayer)
+    ##########计算两步的电脑########
+    """计算两步的电脑使用的方法，
+    如果加上递归就是最大最小树了
+    评价结果是一个1,0组成的列表如，[1,0]
+    奇数位表示这一步走子是否有吃子，1为吃
+    偶数位表示对手这一步走子是否有吃子，1为没有吃
+    比较的时候排序就是[1,1]意思是：吃子    ，没有被吃
+                      [1,0]意思是：吃子    ，被吃
+                      [0,1]意思是：没有吃子，没有被吃
+                      [0,0]意思是：没有吃子，被吃
+    """
+    def getBetterMoveByDeep(self,player):
+        
+        s=[] #存放最终走法和最终分数
+        tmp=[] #临时存放分数
+        m=[] #临时存放走法
+        self.lookdown(3,player,s,tmp,m,original=player)
+        s.sort(lambda x,y:cmp(x[1],y[1]))
+        # import pprint
+        # pprint.pprint(s)
+        # print s[-2]
+        print len(s)
+        # print '*'*8
+        return s[-1][0]
+    def lookdown(self,deep,player,s,tmp,m,original):
+        import copy
+        steps=self.getAllSteps(player)
+        if deep==0:
+            s.append((copy.copy(m[0]),copy.copy(tmp)))
+        else:
+            for i,j in steps:   
+                eat=self.move(i,j)
+                m.append((i,j))
+                player2=self.getAnotherPlayer(player)
+                e=self.hasEat(player2)
+                if player==original:
+                    tmp.append(1 if eat else 0)
+                    tmp.append(-e)
+                elif player2==original:
+                    tmp.append(0 if eat else 1)
+                    tmp.append(e)
+                self.lookdown(deep-1,player2,s,tmp,m,original)
+                tmp.pop()
+                tmp.pop()
+                m.pop()
+                self.undo()
+        # print s,len(s)
+        
+    def getBetterMove(self,player):
+        steps=self.getAllSteps(player)
+        if not steps:
+            return
+        scores=[]
+        highscore=[0,0]
+        highmove=None
+        for i,j in steps:
+            score=[]
+            eat=self.move(i,j)
+            player2=self.getAnotherPlayer(player)
+            score.append(not self.hasEat(player2))
+            self.undo()
+            score.insert(0,1 if eat else 0)
+            scores.append(((i,j),score))
+            if score>=highscore:
+                highscore=score
+                highmove=(i,j)
+        scores.sort(lambda x,y:cmp(x[1],y[1]))
+        print scores
+        return highmove
+    def hasEat(self,player):
+        steps=self.getAllSteps(player)
+        e=0
+        for i,j in steps:
+            eat=self.move(i,j)
+            self.undo()
+            if eat:
+                e+=1
+        return e
+    
+    ##########聪明的电脑########
     def getBestMove(self,player):
-        "搜索博弈树，返回较好的走子"
+        "搜索博弈树，返回较好的走法"
         move,score=self.negMax(4,player,self.getAnotherPlayer(player))
         return move
+        
     def negMax(self,ply,player,opponent):
         best=[0,-1024]
         steps=self.getAllSteps(player)
@@ -119,8 +208,9 @@ class ComputerChess(Chess):
             if eat:
                 value+=10
         return value
+    #########随机的电脑#########
     def rndMove(self,player):
-        '如果不能吃子返回一个随机的走子，否则吃子'
+        '如果不能吃子返回一个随机的走法，否则吃子'
         steps=self.getAllSteps(player)
         if not steps:
             return None
@@ -130,16 +220,18 @@ class ComputerChess(Chess):
             if eat:
                 return i,j
         return random.choice(steps)
+    ####################
     def runHistory(self,history):
         '运行历史'
         self.newGame()
         self.OnSize(None)
         for pos1,pos2,eat in history:
             self.move(pos1,pos2)
-            time.sleep(1)
+            time.sleep(0.5)
             self.OnSize(None)
+            self.ifWin(self.currentPlayer)
 if __name__=='__main__':
     app = wx.App()
-    c=ComputerChess(None, -1, 'Chess',AILevel=2)
+    c=ComputerChess(None, -1, 'Chess',AILevel=3)
     c.Show(True)
     app.MainLoop()
