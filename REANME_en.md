@@ -84,4 +84,4 @@ It's the same on columns.
 
 Python   ：2.7.2
 Depends  ：wxpython
-exe file ：cx_Freeze
+exe file : pyinstaller

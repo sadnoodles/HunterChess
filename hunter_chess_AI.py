@@ -89,9 +89,12 @@ class ComputerChess(Chess):
         if self.AILevel==0:
             #AI被禁用
             return
-        player=2
+        self.computerMove(player=2)
+
+            
+    def computerMove(self,player):
         if self.currentPlayer==player and self.GameOver==False:
-            time.sleep(0.5)
+            # time.sleep(0.5)
             if self.AILevel==1:
                 #获取随机的走子
                 step=self.rndMove(player)
@@ -103,8 +106,7 @@ class ComputerChess(Chess):
                 step=self.getBetterMoveByDeep(player,3)
             elif self.AILevel==4:
                 # step=self.getBestMove(player)
-                step=self.getBetterMoveByDeep(player,5)
-                
+                step=self.getBetterMoveByDeep(player,6)
             if step:
                 self.move(step[0],step[1])
                 self.OnSize(None)

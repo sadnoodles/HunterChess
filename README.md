@@ -93,4 +93,4 @@ A tiny chess game based on python,wxpython
 
 Python版本：2.7.2
 依赖的库  ：wxpython
-打包使用  ：cx_Freeze
+打包使用  ：pyinstaller

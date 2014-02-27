@@ -1,5 +1,6 @@
 *.py[cod]
 *.history
+*.spec
 # C extensions
 *.so
 
