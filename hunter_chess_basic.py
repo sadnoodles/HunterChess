@@ -3,14 +3,24 @@
 #HunterChess:
 #    author: ÁõºÆ½Ü
 #    e-mail£ºsadnoodles@gmail.com
-import wx
+import wx,imgs
+import cStringIO
 class Chess(wx.Frame):
     def __init__(self, parent, id, title):
         wx.Frame.__init__(self, parent, id, title, size=(10, 10))
         self.SetBackgroundColour('WHITE')
-        self.BlackPiece=wx.Bitmap(r'img\ºÚ×Ó.png', wx.BITMAP_TYPE_PNG)
-        self.WhitePiece=wx.Bitmap(r'img\°××Ó.png', wx.BITMAP_TYPE_PNG)
-        self.MaskPiece=wx.Bitmap(r'img\mask.png', wx.BITMAP_TYPE_PNG)
+        
+        stream = cStringIO.StringIO(imgs.white.decode('base64'))
+        self.WhitePiece =wx.BitmapFromImage(wx.ImageFromStream( stream ))
+        
+        stream = cStringIO.StringIO(imgs.black.decode('base64'))
+        self.BlackPiece =wx.BitmapFromImage(wx.ImageFromStream( stream ))
+        
+        stream = cStringIO.StringIO(imgs.mask.decode('base64'))
+        self.MaskPiece=wx.BitmapFromImage(wx.ImageFromStream( stream ))
+        
+        # self.WhitePiece=wx.Bitmap(r'img\°××Ó.png', wx.BITMAP_TYPE_PNG)
+        # self.MaskPiece=wx.Bitmap(r'img\mask.png', wx.BITMAP_TYPE_PNG)
         self.newGame()
         # print self.BlackPiece.Size
         

@@ -14,15 +14,28 @@ class ComputerChess(Chess):
         menu1.Append(101, "SaveHistory")
         menu1.Append(102, "Set")
         menu1.Append(103, "RunHistory")
+        menu1.Append(104, "About")
         menuBar.Append(menu1, "&Game")
         self.SetMenuBar(menuBar)
         self.Bind(wx.EVT_MENU, self.MenuNewGame, id=100)
         self.Bind(wx.EVT_MENU, self.MenuSaveHistory, id=101)
         self.Bind(wx.EVT_MENU, self.MenuSet, id=102)
         self.Bind(wx.EVT_MENU, self.MenuRunHistory, id=103)
+        self.Bind(wx.EVT_MENU, self.MenuAbout, id=104)
 
         self.AILevel=AILevel
         
+    def MenuAbout(self,e=None):
+        from wx.lib.wordwrap import wordwrap
+        info = wx.AboutDialogInfo()
+        info.Name = "Hunter Chess"
+        info.Version = "0.1.0"
+        info.Description = wordwrap(
+        'HunterChess是一个棋类游戏。游戏规则详见README文件。\n作者：刘浩杰\n邮件:sadnoodles@gmail.com'.decode('gbk')
+        ,500, wx.ClientDC(self))
+        info.WebSite = ("https://github.com/sadnoodles/HunterChess", "HunterChess @github")
+        info.License = wordwrap('Use and redistribute Under the terms of GNU GENERAL PUBLIC LICENSE.See the LICENSE file for detail.', 500, wx.ClientDC(self))
+        wx.AboutBox(info)
     def MenuNewGame(self,e=None):
         self.newGame()
         self.OnSize(None)
