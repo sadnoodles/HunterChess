@@ -48,6 +48,7 @@ Player1 move to (0,0), player2 at (2,3) will NOT be eaten.
 case3：
 
 Player1 move to (0,3), player2 at (2,3) will  NOT be eaten.
+
 [1, 1, 0, 1]
 
 [0, 0, 0, 1]
@@ -60,6 +61,7 @@ Player1 move to (0,3), player2 at (2,3) will  NOT be eaten.
 case4：
 
 Player1 move to (2,3), player2 at (3,3) will NOT be eaten.
+
 [1, 1, 0, 2]
 
 [0, 0, 0, 1]
