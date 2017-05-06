@@ -12,10 +12,13 @@ Player black goes first.Click to select, move.Doubleclick to undo.
 Rules:
 ===========
 1,Player moves take turns
+
 2,When player1 moved,take a look at the last move.
   If two pieces(must include the last move) of player1 are against only one piece of player2 in a row (or in a line),
   then the one piece of player2 will be eaten.
+  
   It's same when player2 moves. 
+  
 3,When one player's pieces were all eaten, another player wins.
 
 Examples:
